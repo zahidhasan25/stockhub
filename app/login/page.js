@@ -54,7 +54,7 @@ export default function LoginPage() {
             <label className="block text-sm font-medium text-gray-700">
               Password
             </label>
-            
+            <a
               href="/forgot-password"
               className="text-xs font-medium text-brand-600 hover:underline"
             >
