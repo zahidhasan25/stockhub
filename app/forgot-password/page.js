@@ -2,13 +2,16 @@
 
 import { useState } from "react";
 import AuthCard from "@/components/AuthCard";
+import { useAuth } from "@/lib/authContext";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const { resetPassword } = useAuth();
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
 
@@ -17,28 +20,26 @@ export default function ForgotPasswordPage() {
       return;
     }
 
-    // NOTE: No backend yet — this will call Supabase's password-reset
-    // email flow once auth is connected.
-    console.log("Password reset requested for:", email);
-    setSent(true);
+    setBusy(true);
+    try {
+      await resetPassword(email);
+      setSent(true);
+    } catch (err) {
+      setError(err.message || "Failed to send reset email.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   if (sent) {
     return (
       <AuthCard title="Check your email" subtitle="">
-        <p className="text-center text-sm text-gray-600">
+        <p className="text-center text-sm text-ink/60">
           If an account exists for <span className="font-medium">{email}</span>,
-          a password reset link will be sent there.
+          a password reset link has been sent there.
         </p>
-        <p className="mt-2 text-center text-xs text-gray-400">
-          (No email is actually sent yet — this will work once the backend is connected.)
-        </p>
-        <a
-          href="/login"
-          className="mt-6 block rounded-lg bg-brand-600 py-2.5 text-center text-sm font-medium text-white hover:bg-brand-700"
-        >
-          Back to log in
-        </a>
+        
+         v
       </AuthCard>
     );
   }
@@ -50,14 +51,12 @@ export default function ForgotPasswordPage() {
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">
-            Email
-          </label>
+          <label className="mb-1 block text-sm font-medium text-ink">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-brand-500"
+            className="w-full rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-ember-400"
             placeholder="you@example.com"
           />
         </div>
@@ -66,15 +65,16 @@ export default function ForgotPasswordPage() {
 
         <button
           type="submit"
-          className="w-full rounded-lg bg-brand-600 py-2.5 text-sm font-medium text-white hover:bg-brand-700"
+          disabled={busy}
+          className="w-full rounded-full bg-ember-500 py-2.5 text-sm font-medium text-white hover:bg-ember-600 disabled:opacity-60"
         >
-          Send reset link
+          {busy ? "Sending..." : "Send reset link"}
         </button>
       </form>
 
-      <p className="mt-5 text-center text-sm text-gray-500">
+      <p className="mt-5 text-center text-sm text-ink/50">
         Remembered your password?{" "}
-        <a href="/login" className="font-medium text-brand-600 hover:underline">
+        <a href="/login" className="font-medium text-ember-600 hover:underline">
           Log in
         </a>
       </p>

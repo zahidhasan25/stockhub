@@ -2,51 +2,52 @@
 
 import { useAuth } from "@/lib/authContext";
 import { useRouter } from "next/navigation";
+import ApertureMark from "./ApertureMark";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const router = useRouter();
 
-  function handleLogout() {
-    logout();
+  async function handleLogout() {
+    await logout();
     router.push("/");
   }
 
   return (
-    <header className="border-b border-gray-200 bg-white">
+    <header className="border-b border-line bg-paper/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <a href="/" className="text-xl font-bold text-brand-700">
-          StockHub
+        <a href="/" className="flex items-center gap-2 text-ink">
+          <ApertureMark className="h-6 w-6 text-ember-500" />
+          <span className="font-display text-lg font-semibold tracking-tight">
+            Aperture&nbsp;Market
+          </span>
         </a>
 
-        <nav className="hidden gap-6 text-sm font-medium text-gray-600 md:flex">
-          <a href="/browse" className="hover:text-brand-600">Browse</a>
-          <a href="/pricing" className="hover:text-brand-600">Pricing</a>
-          <a href="/upload" className="hover:text-brand-600">Become a Contributor</a>
+        <nav className="hidden gap-7 text-sm text-ink-soft md:flex">
+          <a href="/browse" className="text-ink/70 hover:text-ember-500">Browse</a>
+          <a href="/pricing" className="text-ink/70 hover:text-ember-500">Pricing</a>
+          <a href="/upload" className="text-ink/70 hover:text-ember-500">Become a Contributor</a>
         </nav>
 
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              <span className="text-sm text-gray-600">Hi, {user.name}</span>
+              <span className="text-sm text-ink/70">Hi, {user.name}</span>
               <button
                 onClick={handleLogout}
-                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="rounded-full border border-line px-4 py-2 text-sm font-medium text-ink hover:border-ink/40"
               >
                 Log out
               </button>
             </>
           ) : (
             <>
-              <a
-                href="/login"
-                className="text-sm font-medium text-gray-700 hover:text-brand-600"
-              >
+              <a href="/login" className="text-sm font-medium text-ink/70 hover:text-ember-500">
                 Log in
               </a>
               <a
                 href="/signup"
-                className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700"
+                className="rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper hover:bg-ember-600"
               >
                 Join Free
               </a>
